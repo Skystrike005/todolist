@@ -1,0 +1,18 @@
+<% include ./partials/header %>
+
+<div id="container">
+	<h1>To-Do List <i class="fa fa-plus"></i></h1>
+	<form action="/new" method="POST">
+	    <input type="text" name="task" placeholder="Add New Todo">
+    </form>
+	<ul>
+		<% todos.forEach(function(todo){ %>
+		    <li <% if(todo.completed){ %>class="completed" <% } %>><span id="<%= todo._id %>"><i class="fa fa-trash"></i></span> <%= todo.content %></li>
+		<% }); %>
+	</ul>
+
+</div>
+
+<script src="/js/todo.js" type="text/javascript"></script>
+
+<% include ./partials/footer %>
