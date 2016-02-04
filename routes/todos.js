@@ -1,10 +1,11 @@
 var express = require("express"),
     router = express.Router(),
-    TodoList = require("../models/todo");
+    TodoList = require("../models/todo"),
+    middleware = require("../middleware");
     
 
 //Index Route
-router.get("/", function(req, res){
+router.get("/", middleware.isLoggedIn, function(req, res){
     TodoList.find({}, function(err, todos){
         if(err){
             console.log(err);
