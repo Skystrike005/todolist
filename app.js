@@ -2,6 +2,7 @@ var express = require("express"),
     app = express(),
     bodyParser = require("body-parser"),
     methodOverride = require("method-override"),
+    TodoList = require("./models/todo"),
     mongoose = require("mongoose");
 
 // To specify the static resources, use app.use(express.static("XX")) Command
@@ -13,14 +14,6 @@ app.use(methodOverride());
 
 // To connect to the mongoDB 
 mongoose.connect("mongodb://localhost/todo_list");
-
-// Schema Setup
-var todoSchema = new mongoose.Schema({
-    completed: {type:Boolean, default:false},
-    content: String
-});
-
-var TodoList = mongoose.model("TodoList", todoSchema);
 
 //Index Route
 app.get("/", function(req, res){
