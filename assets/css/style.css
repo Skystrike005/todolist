@@ -22,7 +22,7 @@ ul {
 	margin: 0;
 	padding: 0;
 }
-h1 {
+.head {
 	background: #2980b9;
 	color: white;
 	text-transform: uppercase;
@@ -80,4 +80,20 @@ span {
 li:hover span{
 	width: 40px;
 	opacity: 1.0;
+}
+
+.mid {
+	text-align: center;
+}
+
+.btn.btn-primary {
+	padding: 6px 30px;
+}
+
+.register {
+	padding-bottom: 1px;
+}
+
+.content {
+	padding: 0 4px;
 }
