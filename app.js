@@ -2,40 +2,70 @@ var express = require("express"),
     app = express(),
     bodyParser = require("body-parser"),
     methodOverride = require("method-override"),
-    passport = require("passport"),
-    LocalStrategy = require("passport-local"),
-    User = require("./models/user"),
     mongoose = require("mongoose");
 
 // To specify the static resources, use app.use(express.static("XX")) Command
 app.use(express.static('assets'));
 
-//Require Routes
-var todoRoutes = require("./routes/todos");
-
 app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs");
-app.use(methodOverride("_method"));
+app.use(methodOverride());
 
 // To connect to the mongoDB 
 mongoose.connect("mongodb://localhost/todo_list");
 
-//Passport config
-app.use(require("express-session")({
-    secret: "This is a strange secret",
-    resave: false,
-    saveUninitialized: false
-}));
-
-app.use(passport.initialize());
-app.use(passport.session());
-passport.use(new LocalStrategy(User.authenticate()));
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
-
-app.use(function(req, res, next){
-    res.locals.currentUser = req.user;
+// Schema Setup
+var todoSchema = new mongoose.Schema({
+    completed: {type:Boolean, default:false},
+    content: String
 });
+
+var TodoList = mongoose.model("TodoList", todoSchema);
+
+//Index Route
+app.get("/", function(req, res){
+    TodoList.find({}, function(err, todos){
+        if(err){
+            console.log(err);
+        } else {
+            res.render("index", {todos: todos});
+        }
+    })
+})
+
+//Create Route
+app.post("/new", function(req, res){
+    var newTask = {content: req.body.task};
+    TodoList.create(newTask, function(err, newCreate){
+        if(err){
+            console.log(err);
+        } else {
+            res.redirect("/");
+        }
+    });
+})
+//UPDATE status ROUTE
+app.post("/:id/:status", function(req,res){
+    TodoList.update({_id:req.params.id},{$set:{completed:req.params.status}},function(err, update){
+        if(err){
+            console.log(err);
+        } else {
+            console.log(update);
+        }
+    });
+});
+
+//DELETE ROUTE
+app.delete("/:id", function(req, res){
+    console.log(req.params.id);
+    TodoList.findByIdAndRemove(req.params.id, function(err, deleted){
+        if(err){
+            console.log(err);
+        } else {
+            console.log(deleted);
+        }
+    });
+})
 
 app.listen(process.env.PORT, process.env.IP, function(){
     console.log("Todo List Started");
